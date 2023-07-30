@@ -14,7 +14,7 @@ struct ContentView: View {
 //                title: "Home",
                 text: "HOME SCREEN",
                 imageName: "house",
-                color: .orange)
+                backgroundColorButton: .orange)
         }
     }
 }
@@ -23,43 +23,106 @@ struct Screen: View {
 //    let title: String
     let text: String
     let imageName: String
-    let color: Color
+    let backgroundColorButton: Color
+    
+    @State var alertIsPresented: Bool = false
 
     var body: some View {
         VStack {
             Image(systemName: imageName)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
-                .frame(width: 64, height: 64, alignment: .center)
+                .frame(
+                    width: 64,
+                    height: 64,
+                    alignment: .center)
                 .padding(2)
             Text(text)
-                .font(.system(size: 22, weight: .bold, design: .monospaced))
+                .font(
+                    .system(
+                        size: 22,
+                        weight: .bold,
+                        design: .monospaced))
             NavigationLink {
                 Screen(
 //                    title: "Notification",
                     text: "NOTIFICATION SCREEN",
                     imageName: "bell",
-                    color: .green)
+                    backgroundColorButton: .green)
             } label: {
-                ContinueButton(color: color)
+                NextScreenButton(
+                    textButton: "Next screen",
+                    backgroundColor: backgroundColorButton,
+                    foregroundColor: .black)
             }
-
+            
+            AlertButton(
+                titleAlert: "Lorem Ipsum",
+                textAlert: "",
+                dismissAlert: "OK",
+                isButtonPressed: $alertIsPresented)
         }
 //        .navigationTitle(title)
     }
 }
 
-struct ContinueButton: View {
-    let color: Color
+struct NextScreenButton: View {
+    let textButton: String
+    let backgroundColor: Color
+    let foregroundColor: Color
+
     var body: some View {
-        Text("Continue")
-            .frame(maxWidth: .infinity - 24)
-            .frame(height: 54, alignment: .center)
-            .font(.system(size: 18, weight: .light, design: .monospaced))
-            .foregroundColor(.black)
-            .background(color)
+        Text(textButton)
+            .frame(
+                width: UIScreen.main.bounds.width * 0.95,
+                height: 54,
+                alignment: .center)
+            .font(
+                .system(
+                    size: 18,
+                    weight: .medium,
+                    design: .monospaced))
+            .foregroundColor(foregroundColor)
+            .background(backgroundColor)
             .cornerRadius(8)
-            .padding(12)
+            .padding(2)
+    }
+}
+
+struct AlertButton: View {
+    let titleAlert: String
+    let textAlert: String
+    let dismissAlert: String
+    @Binding var isButtonPressed: Bool
+
+    var body: some View {
+        Button(action: {
+            self.isButtonPressed.toggle()
+        }, label: {
+            Text("Show alert")
+                .frame(width: UIScreen.main.bounds.width * 0.95)
+        })
+            .frame(
+                width: UIScreen.main.bounds.width * 0.95,
+                height: 54,
+                alignment: .center)
+            .font(
+                .system(
+                    size: 18,
+                    weight: .medium,
+                    design: .monospaced))
+            .foregroundColor(.white)
+            .background(.purple)
+            .cornerRadius(8)
+            .padding(2)
+            .alert(
+                isPresented: $isButtonPressed,
+                content: {
+                    Alert(
+                        title: Text(titleAlert),
+                        message: Text(textAlert),
+                        dismissButton: .default(Text(dismissAlert)))
+                })
     }
 }
 
