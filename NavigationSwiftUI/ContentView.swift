@@ -26,6 +26,7 @@ struct Screen: View {
     let backgroundColorButton: Color
     
     @State var alertIsPresented: Bool = false
+    @State var isChangeButtonColor: Bool = false
 
     var body: some View {
         VStack {
@@ -57,11 +58,13 @@ struct Screen: View {
             }
             
             AlertButton(
-                titleAlert: "Lorem Ipsum",
-                textAlert: "",
-                dismissAlert: "OK",
-                isButtonPressed: $alertIsPresented)
+                titleAlert: text,
+                textAlert: "Choice button background color",
+//                dismissAlert: "OK",
+                isButtonPressed: $alertIsPresented,
+                isChangeButtonColor: $isChangeButtonColor)
         }
+//        .navigationBarBackButtonHidden(true)
 //        .navigationTitle(title)
     }
 }
@@ -92,8 +95,9 @@ struct NextScreenButton: View {
 struct AlertButton: View {
     let titleAlert: String
     let textAlert: String
-    let dismissAlert: String
+//    let dismissAlert: String
     @Binding var isButtonPressed: Bool
+    @Binding var isChangeButtonColor: Bool
 
     var body: some View {
         Button(action: {
@@ -112,7 +116,7 @@ struct AlertButton: View {
                     weight: .medium,
                     design: .monospaced))
             .foregroundColor(.white)
-            .background(.purple)
+            .background(isChangeButtonColor ? .brown : .purple)
             .cornerRadius(8)
             .padding(2)
             .alert(
@@ -121,7 +125,13 @@ struct AlertButton: View {
                     Alert(
                         title: Text(titleAlert),
                         message: Text(textAlert),
-                        dismissButton: .default(Text(dismissAlert)))
+                        primaryButton: .default(Text("Purple"), action: {
+                            self.isChangeButtonColor = false
+                        }),
+                        secondaryButton: .cancel(Text("Brown"), action: {
+                            self.isChangeButtonColor = true
+                        })
+                    )
                 })
     }
 }
